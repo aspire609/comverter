@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy – {{ site_name }}</title>
+<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.65;color:#222}a{color:#2f6bff}h2{margin-top:28px}</style></head>
+<body>
+<p><a href="/">← Back</a></p>
+<h1>Privacy Policy</h1>
+<p><em>Template text. Review it and adapt it to your situation (and your local laws) before relying on it.</em></p>
+
+<h2>Files you upload</h2>
+<p>{{ site_name }} converts audio and video files you upload. Files are processed on our server and deleted automatically as soon as the converted file has been sent back to you (or if the conversion fails). We do not keep, listen to, watch, or share your files.</p>
+
+<h2>Information we collect</h2>
+<p>Our server may keep standard technical logs (such as IP address, time of request, and error messages) for security, abuse prevention and troubleshooting. Your IP address is also used for temporary rate limiting.</p>
+
+{% if adsense %}
+<h2>Advertising and cookies</h2>
+<p>We use Google AdSense to show ads. Google and its partners may use cookies to serve ads based on your visits to this and other websites. You can opt out of personalized advertising at <a href="https://www.google.com/settings/ads">google.com/settings/ads</a> or learn more at <a href="https://policies.google.com/technologies/ads">policies.google.com/technologies/ads</a>.</p>
+{% endif %}
+
+<h2>Contact</h2>
+<p>Questions? Email <a href="mailto:{{ email }}">{{ email }}</a>.</p>
+</body></html>

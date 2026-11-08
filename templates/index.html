@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ site_name }} – Free MP3 &amp; MP4 Converter</title>
+<meta name="description" content="Convert audio and video files to MP3 or MP4 online. Free, fast, no sign-up. Files are deleted right after conversion.">
+{% if adsense_client %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client }}" crossorigin="anonymous"></script>
+{% endif %}
+<style>
+  :root{
+    --bg:#0f1115; --card:#181b22; --line:#2a2f3a; --text:#eceff4; --muted:#9aa3b2;
+    --accent:#6ea8ff; --accent2:#8b7bff; --ok:#4cd39b; --err:#ff6b6b;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f5f6f9; --card:#fff; --line:#dfe3ea; --text:#161a22; --muted:#5d6676; --accent:#2f6bff; --accent2:#6a4dff;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+  header,main,footer{max-width:760px;margin:0 auto;padding:0 20px}
+  header{padding-top:28px;padding-bottom:6px}
+  .logo{font-weight:700;font-size:1.15rem;letter-spacing:.2px}
+  .logo span{color:var(--accent)}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);margin:28px 0 8px;line-height:1.15}
+  .sub{color:var(--muted);margin:0 0 24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:38px 16px;text-align:center;cursor:pointer;transition:.15s}
+  .drop:hover,.drop.over{border-color:var(--accent);background:rgba(110,168,255,.06)}
+  .drop strong{display:block;font-size:1.05rem;margin-bottom:4px}
+  .drop small{color:var(--muted)}
+  .fname{margin-top:14px;font-size:.95rem;word-break:break-all}
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .field{flex:1 1 200px}
+  label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg input{display:none}
+  .seg label{flex:1;margin:0;padding:10px;text-align:center;cursor:pointer;font-size:.95rem;color:var(--text);text-transform:none;letter-spacing:0}
+  .seg input:checked + label{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+  select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:.95rem}
+  button.go{margin-top:20px;width:100%;padding:14px;border:0;border-radius:12px;font-size:1.05rem;font-weight:600;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  button.go:disabled{opacity:.5;cursor:not-allowed}
+  .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:18px;display:none}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}
+  .bar.busy i{width:100%;animation:pulse 1.2s ease-in-out infinite;opacity:.7}
+  @keyframes pulse{50%{opacity:.3}}
+  .msg{margin-top:14px;font-size:.95rem;min-height:1.4em}
+  .msg.err{color:var(--err)} .msg.ok{color:var(--ok)}
+  .dl{display:none;margin-top:12px;text-align:center}
+  .dl a{display:inline-block;padding:12px 22px;border-radius:12px;border:1px solid var(--ok);color:var(--ok);text-decoration:none;font-weight:600}
+  .ad{margin:22px 0;min-height:90px;text-align:center}
+  .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:30px 0}
+  .feat div{padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:.92rem;color:var(--muted)}
+  .feat b{display:block;color:var(--text);margin-bottom:4px}
+  footer{padding:24px 20px 40px;color:var(--muted);font-size:.85rem;text-align:center}
+  footer a{color:var(--muted);margin:0 8px}
+</style>
+</head>
+<body>
+<header><div class="logo">{{ site_name[:5] }}<span>{{ site_name[5:] }}</span></div></header>
+<main>
+  <h1>Convert to MP3 or MP4</h1>
+  <p class="sub">Upload a file, pick a format, download. Free, no sign-up, and your file is deleted right after conversion.</p>
+
+  {% if adsense_client and slot_top %}
+  <div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ slot_top }}" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
+  {% endif %}
+
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0">
+      <strong>Drop a file here or click to browse</strong>
+      <small>Audio or video · up to {{ max_mb }} MB</small>
+      <input type="file" id="file" hidden accept="audio/*,video/*,.mkv,.flac,.opus,.m4a,.wma,.aiff,.amr,.ts">
+    </div>
+    <div class="fname" id="fname"></div>
+
+    <div class="row">
+      <div class="field">
+        <label>Convert to</label>
+        <div class="seg">
+          <input type="radio" name="target" id="t-mp3" value="mp3" checked><label for="t-mp3">MP3 (audio)</label>
+          <input type="radio" name="target" id="t-mp4" value="mp4"><label for="t-mp4">MP4 (video)</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="quality">Quality</label>
+        <select id="quality"></select>
+      </div>
+    </div>
+
+    <button class="go" id="go" disabled>Convert</button>
+    <div class="bar" id="bar"><i></i></div>
+    <div class="msg" id="msg"></div>
+    <div class="dl" id="dl"><a id="dla" href="#" download>⬇ Download</a></div>
+  </div>
+
+  {% if adsense_client and slot_bottom %}
+  <div class="ad"><ins class="adsbygoogle" style="display:block" data-ad-client="{{ adsense_client }}" data-ad-slot="{{ slot_bottom }}" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
+  {% endif %}
+
+  <section class="feat">
+    <div><b>Asphire</b> Keith Daven G bandiola </div>
+  </section>
+</main>
+<footer>
+  <a href="/privacy">Privacy</a><a href="/terms">Terms</a>
+  <div style="margin-top:8px">© {{ site_name }}. Only convert files you own or have permission to use.</div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const drop = $('drop'), fileInput = $('file'), go = $('go'), msg = $('msg'),
+      bar = $('bar'), dl = $('dl'), dla = $('dla'), qsel = $('quality');
+const MAX = {{ max_mb }} * 1024 * 1024;
+let file = null, lastUrl = null;
+
+const QUALITY = {
+  mp3: [['192','192 kbps (recommended)'],['128','128 kbps (smaller)'],['320','320 kbps (best)']],
+  mp4: [['medium','Medium (recommended)'],['low','Low (smaller file)'],['high','High (larger file)']]
+};
+function fillQuality(){
+  const t = document.querySelector('input[name=target]:checked').value;
+  qsel.innerHTML = QUALITY[t].map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
+}
+document.querySelectorAll('input[name=target]').forEach(r => r.addEventListener('change', fillQuality));
+fillQuality();
+
+function say(text, cls){ msg.textContent = text; msg.className = 'msg ' + (cls||''); }
+function setFile(f){
+  dl.style.display = 'none';
+  if (!f) return;
+  if (f.size > MAX){ say('File is too large. The limit is {{ max_mb }} MB.', 'err'); return; }
+  file = f; $('fname').textContent = `${f.name} · ${(f.size/1048576).toFixed(1)} MB`;
+  go.disabled = false; say('');
+}
+drop.addEventListener('click', () => fileInput.click());
+drop.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') fileInput.click(); });
+fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => setFile(e.dataTransfer.files[0]));
+
+go.addEventListener('click', () => {
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('target', document.querySelector('input[name=target]:checked').value);
+  fd.append('quality', qsel.value);
+
+  go.disabled = true; dl.style.display = 'none'; bar.style.display = 'block';
+  bar.classList.remove('busy'); bar.firstElementChild.style.width = '0';
+  say('Uploading…');
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/convert');
+  xhr.responseType = 'blob';
+  xhr.upload.onprogress = e => {
+    if (e.lengthComputable) bar.firstElementChild.style.width = (e.loaded / e.total * 100) + '%';
+  };
+  xhr.upload.onload = () => { bar.classList.add('busy'); say('Converting… this can take a little while for big files.'); };
+  xhr.onerror = () => { done(); say('Network error. Please try again.', 'err'); };
+  xhr.onload = async () => {
+    done();
+    if (xhr.status === 200){
+      if (lastUrl) URL.revokeObjectURL(lastUrl);
+      lastUrl = URL.createObjectURL(xhr.response);
+      const cd = xhr.getResponseHeader('Content-Disposition') || '';
+      const m = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(cd);
+      dla.href = lastUrl; dla.download = m ? decodeURIComponent(m[1]) : 'converted.' + fd.get('target');
+      dl.style.display = 'block'; say('Done! Your file is ready.', 'ok');
+    } else {
+      let text = 'Conversion failed.';
+      try { text = JSON.parse(await xhr.response.text()).error || text; } catch(_){}
+      say(text, 'err');
+    }
+  };
+  xhr.send(fd);
+  function done(){ bar.style.display = 'none'; bar.classList.remove('busy'); go.disabled = false; }
+});
+</script>
+</body>
+</html>
